@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  # mongodb container
+  mongo_db:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongodb_vol:/data/db
+    ports:
+      - 2717:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: amshrbo
+      MONGO_INITDB_ROOT_PASSWORD: amshrbo
+
+  #tcp data server container
+  tcp_server:
+    container_name: tcp_server
+    build: .
+    restart: always
+    ports:
+      - 8282:8282
+    environment:
+      PORT: 8282
+      MONGODB_URI: mongodb://mongo_db:27017
+      DB_NAME: bosta_task
+      NAME: amshrbo
+      DB_USER: amshrbo
+      DB_PASS: amshrbo
+    depends_on: 
+      - mongo_db
+
+volumes:
+  mongodb_vol:
+
