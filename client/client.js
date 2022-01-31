@@ -5,30 +5,11 @@ const mongoose = require('mongoose');
 // Initialize DB
 require('./initDB')();
 
-//connect to the database
-// mongoose.connect(process.env.MONGODB_URI, {
-//       dbName: process.env.DB_NAME,
-//       user: process.env.DB_USER,
-//       pass: process.env.DB_PASS,
-//       useNewUrlParser: true
-//     }).then(() => {
-//       console.log('....  Mongodb connected  ....');
-//       console.log('....  Mongodb connected  ....');
-//     }).catch(err => console.log(err.message));
-
-// // check connection
-// mongoose.connection.on('connected', () => {
-//     console.log('.... Mongoose connected to db ....');
-// });
-
-// // require template model
+// require template model
 const Template = require('./models/Templete');
 
 const port = 8282;
 const socket = new JsonSocket(new net.Socket());
-console.log("..... Hello from the client side .....");
-
-
 
 socket.connect({
     port: port,
@@ -37,14 +18,20 @@ socket.connect({
 socket.on('connect', () => {
     socket.on('message', (data) => {
         
-        console.log("logging data from the client")
-        console.log(data)
-        // putting data into the database
-        // run()
-        // async function run() {
-        //     const temp = await Template.create(data)
-        //     console.log(temp)
-        // }
+        console.log(".... logging data from the client ....");
+        try{            
+            const datajson = JSON.parse(data);
+            run()
+            async function run(){
+                try{
+                    const temp = await Template.create(datajson);
+                    console.log(".... A new entry have been inserted ....");
+                    console.log(temp);
+                    console.log(".... .... .... ... ... ... ... ...  ....");
+                }catch(e) {console.log(e.message)}
+            }
+
+        } catch(e){console.log(e.message)}
 
     });
 });
