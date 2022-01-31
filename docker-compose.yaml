@@ -21,13 +21,6 @@ services:
     restart: always
     ports:
       - 8282:8282
-    environment:
-      PORT: 8282
-      MONGODB_URI: mongodb://mongo_db:27017
-      DB_NAME: bosta_task
-      NAME: amshrbo
-      DB_USER: amshrbo
-      DB_PASS: amshrbo
     depends_on: 
       - mongo_db
 
@@ -39,7 +32,13 @@ services:
       - mongo_db
       - tcp_server
     restart: always
-    network_mode: host
+    # network_mode: host
+    environment:
+      MONGODB_URI: mongodb://mongo_db:27017
+      DB_NAME: bosta_task
+      NAME: amshrbo
+      DB_USER: amshrbo
+      DB_PASS: amshrbo
   
 
 volumes:
