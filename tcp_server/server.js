@@ -31,5 +31,5 @@ server.on('connection', function(socket) {
     streamInterval = setInterval(function() {
         const data = dummyjson.parse(template);
         socket.sendMessage(data);
-    }, 1000);
+    }, 30000);
 });
