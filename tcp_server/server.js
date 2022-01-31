@@ -1,13 +1,6 @@
 const net = require('net');
 const dummyjson = require('dummy-json');
 const JsonSocket = require('json-socket');
-const mongoose = require('mongoose');
-
-// // Initialize DB
-// require('./initDB')();
-
-// // require template model
-// const Template = require('./models/Templete');
  
 const template = `{
     "receiver": {
@@ -37,6 +30,6 @@ server.on('connection', function(socket) {
     streamInterval = setInterval(function() {
         const data = dummyjson.parse(template);
         socket.sendMessage(data);
-
+        console.log(".............. Server started ..............")
     }, 1000);
 });
