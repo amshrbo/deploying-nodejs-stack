@@ -3,21 +3,31 @@ const Schema = mongoose.Schema;
 
 const TempleteSchema = new Schema({
     receiver: {
-        firstName: {type: String},
-        lastName: {type: String},
-        email: {type: String},
+        firstName: String,
+        lastName: String,
+        email: String,
     },
-    price: {type: Number},
+    price: {type: Number, default: 0.0, min: 10, max: 200},
     address: {
-        country: {type: String},
-        city: {type: String},
-        street: {type: String},
+        country: String,
+        city: String,
+        street: String,
         coordinates: {
-            x: {type: Number},
-            y: {type: Number}
-        },
-        creationDate: {type: Date}
-    }
+            x: {
+                type: Number,
+                default: 0.0,
+                min: -50,
+                max: 50
+            },
+            y: {
+                type: Number,
+                default: 0.0,
+                min: -25,
+                max: 25
+            },
+        }
+    },
+    creationDate: Date
 });
 
 const Template = mongoose.model('Template', TempleteSchema);
