@@ -1,7 +1,8 @@
 const net = require('net');
 const dummyjson = require('dummy-json');
 const JsonSocket = require('json-socket');
- 
+
+// getting error at the end of creationDate there was an additional ,
 const template = `{
     "receiver": {
         "firstName": "{{firstName}}",
@@ -18,7 +19,7 @@ const template = `{
             "y": {{float -25 25 '0.00'}}
         }
     },
-    "creationDate": "{{date '2015' '2021' }}",
+    "creationDate": "{{date '2015' '2021' }}"
 }`;
 
 const port = 8282;
