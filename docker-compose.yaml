@@ -7,12 +7,12 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongodb_vol:/data/db
+      - mongodb_bosta:/data/db
     ports:
       - 2717:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: amshrbo
-      MONGO_INITDB_ROOT_PASSWORD: amshrbo
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_UN
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PW
     
   #tcp data server container
   tcp_server:
@@ -27,20 +27,18 @@ services:
   client:
     container_name: client
     build: ./client
-    command: ["npm", "run", "client"]
     depends_on:
       - mongo_db
       - tcp_server
     restart: always
-    # network_mode: host
     environment:
       MONGODB_URI: mongodb://mongo_db:27017
-      DB_NAME: bosta_task
+      DB_NAME: $DB_NAME
       NAME: amshrbo
-      DB_USER: amshrbo
-      DB_PASS: amshrbo
+      DB_USER: $MONGO_UN
+      DB_PASS: $MONGO_PW
   
 
 volumes:
-  mongodb_vol:
+  mongodb_bosta:
 
