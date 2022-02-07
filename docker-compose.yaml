@@ -1,19 +1,12 @@
 version: "3"
 
+# configuring the default network to be the replicaset_cluster network
+networks:
+  default:
+    external: true
+    name: replicaset_cluster_mongo_net_rs1
+
 services:
-  # mongodb container
-  mongo_db:
-    container_name: mongo_db
-    image: mongo:latest
-    restart: always
-    volumes:
-      - mongodb_bosta:/data/db
-    ports:
-      - 2717:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: $MONGO_UN
-      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PW
-    
   #tcp data server container
   tcp_server:
     container_name: tcp_server
@@ -21,24 +14,14 @@ services:
     restart: always
     ports:
       - 8282:8282
-    depends_on: 
-      - mongo_db
 
   client:
     container_name: client
     build: ./client
     depends_on:
-      - mongo_db
       - tcp_server
     restart: always
     environment:
-      MONGODB_URI: mongodb://mongo_db:27017
+      MONGODB_URI: $MONGO_URI
       DB_NAME: $DB_NAME
-      NAME: amshrbo
-      DB_USER: $MONGO_UN
       DB_PASS: $MONGO_PW
-  
-
-volumes:
-  mongodb_bosta:
-
