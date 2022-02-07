@@ -1,0 +1,72 @@
+volumes:
+  key_auth_vol:
+  mongo_vol_1:
+  mongo_vol_2:
+  mongo_vol_3:
+
+networks:
+  mongo_net_rs1:
+
+services:
+  # see documentation for keyfiles https://docs.mongodb.com/manual/core/security-internal-authentication/#std-label-internal-auth-keyfile
+  # creating a key file to share between or mongo nodes in the replicaset
+  gen_auth_key:
+    container_name: gen_auth_key
+    image: depop/openssl-bats
+    volumes:
+      - key_auth_vol:/mongo-conf
+    command: 'bash -c "openssl rand -base64 756 > /mongo-conf/mongodb-keyfile; chmod 600 /mongo-conf/mongodb-keyfile; chown 999 /mongo-conf/mongodb-keyfile"'
+
+  # primary node
+  mongo-primary:
+    container_name: mongo-primary
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_UN
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PW
+    volumes:
+      - key_auth_vol:/opt/keyfile_auth
+      - mongo_vol_1:/data/db
+    command: 'mongod --auth --keyFile /opt/keyfile_auth/mongodb-keyfile --replSet bosta-rs-1'
+    depends_on:
+      - gen_auth_key
+    networks:
+      mongo_net_rs1:
+      
+  # worker 1
+  mongo-worker-1:
+    container_name: mongo-worker-1
+    image: mongo:latest
+    ports:
+      - 27018:27017
+    volumes:
+      - key_auth_vol:/opt/keyfile_auth
+      - mongo_vol_2:/data/db
+    command: 'mongod --auth --keyFile /opt/keyfile_auth/mongodb-keyfile --replSet bosta-rs-1'
+    depends_on:
+      - gen_auth_key
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_UN
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PW
+    networks:
+      mongo_net_rs1:
+
+  # worker 2
+  mongo-worker-2:
+    container_name: mongo-worker-2
+    image: mongo:latest
+    ports:
+      - 27019:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_UN
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PW
+    volumes:
+      - key_auth_vol:/opt/keyfile_auth
+      - mongo_vol_3:/data/db
+    command: 'mongod --auth --keyFile /opt/keyfile_auth/mongodb-keyfile --replSet bosta-rs-1'
+    depends_on:
+      - gen_auth_key
+    networks:
+      mongo_net_rs1:
