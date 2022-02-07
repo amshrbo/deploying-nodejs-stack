@@ -1,5 +1,6 @@
 version: "3"
 
+# configuring the default network to be the replicaset_cluster network
 networks:
   default:
     external: true
@@ -13,8 +14,6 @@ services:
     restart: always
     ports:
       - 8282:8282
-    # networks:
-    #   replicaset_cluster_mongo_net_rs1:
 
   client:
     container_name: client
@@ -26,5 +25,3 @@ services:
       MONGODB_URI: $MONGO_URI
       DB_NAME: $DB_NAME
       DB_PASS: $MONGO_PW
-    # networks:
-    #   replicaset_cluster_mongo_net_rs1:
